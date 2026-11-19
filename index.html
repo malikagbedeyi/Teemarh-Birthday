@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Teemarh!</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playfair Display, Dancing Script, and Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom Font Utility Classes */
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+
+        /* Luxurious Dark Rose-Gold Background */
+        body {
+            background: radial-gradient(circle at top center, #241019 0%, #12070c 55%, #090306 100%);
+            color: #f8f1f4;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Gold & Rose-Gold Shimmer Text */
+        .text-gold {
+            background: linear-gradient(135deg, #fff3b0 0%, #ffd700 45%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-rosegold {
+            background: linear-gradient(135deg, #ffd1dc 0%, #b76e79 50%, #e6a4b4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Frosted Glass Card Styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(183, 110, 121, 0.28);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+        }
+
+        /* Polaroid Card Styling */
+        .polaroid {
+            background: #fffaf7;
+            padding: 14px 14px 22px 14px;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(183, 110, 121, 0.15);
+            position: relative;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+        }
+
+        .polaroid:hover {
+            transform: translateY(-8px) rotate(0deg) scale(1.02) !important;
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.75), 0 0 28px rgba(255, 215, 0, 0.25);
+            z-index: 15;
+        }
+
+        /* Delete Button Styling */
+        .delete-btn {
+            position: absolute;
+            top: 22px;
+            right: 22px;
+            background: rgba(15, 5, 10, 0.65);
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: none; /* Hidden by default for regular visitors */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.25s ease;
+            z-index: 20;
+        }
+
+        /* Show delete buttons only when Admin mode is active */
+        .admin-mode .delete-btn {
+            display: flex;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.95);
+            transform: scale(1.12);
+        }
+
+        /* Custom Passcode Modal Styling */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        /* Gentle Floating Animation */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .animate-float {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0509;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b76e79;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-[#b76e79] selection:text-white">
+
+    <!-- Full-Screen Falling Confetti Canvas -->
+    <canvas id="confetti" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+    <!-- Floating Status Toast (Replaces alert() for feedback) -->
+    <div id="statusToast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[110] hidden px-6 py-3 rounded-full glass-card border border-[#ffd700]/50 text-[#ffd700] font-montserrat text-sm shadow-lg transition-all duration-300">
+        Status message
+    </div>
+
+    <!-- Teemarh Exclusive VIP Mode Banner (Visible ONLY when Teemarh unlocks her view) -->
+    <div id="vipBanner" class="hidden sticky top-0 z-40 bg-gradient-to-r from-[#2b101c]/95 via-[#3d1626]/95 to-[#2b101c]/95 backdrop-blur-md border-b border-[#ffd700]/40 px-4 py-2.5 text-center shadow-lg">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm font-montserrat">
+            <span class="text-[#ffd700] font-semibold tracking-wide">👑 Queen Teemarh's Private View</span>
+            <span class="text-gray-300 hidden sm:inline">• Upload/delete photos, manage wishes & unwrap your gift</span>
+            <button id="bannerLockBtn" type="button" class="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[#ffb6c1] text-xs transition-colors cursor-pointer">
+                Switch to Guest View
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 pt-16 pb-12 overflow-hidden">
+        <!-- Ambient Radial Glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[540px] md:h-[540px] bg-[#b76e79]/20 rounded-full blur-[110px] pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-3xl mx-auto">
+            <!-- Decorative Crown / Sparkle Emblem -->
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full glass-card border border-[#ffd700]/40 mb-6 animate-float shadow-[0_0_25px_rgba(255,215,0,0.2)]">
+                <svg class="w-8 h-8 text-[#ffd700]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                </svg>
+            </div>
+
+            <p class="font-montserrat uppercase tracking-[0.35em] text-xs md:text-sm text-[#ffb6c1] mb-3">
+                A Celebration of You
+            </p>
+
+            <h1 class="font-playfair text-4xl sm:text-6xl md:text-7xl font-bold text-gold tracking-tight mb-2">
+                Happy Birthday
+            </h1>
+
+            <h2 class="font-dancing text-6xl sm:text-7xl md:text-8xl text-rosegold py-2 drop-shadow-[0_4px_20px_rgba(183,110,121,0.4)]">
+                Teemarh
+            </h2>
+
+            <!-- Birth Month, Day, and Year Pill (Update the date text below to match Teemarh's exact birthday!) -->
+            <div class="mt-6 inline-flex items-center gap-3 px-6 py-2.5 rounded-full glass-card border border-[#ffd700]/35 shadow-[0_0_20px_rgba(183,110,121,0.25)]">
+                <span class="text-[#ffd700] text-sm">✦</span>
+                <span id="birthDateDisplay" class="font-montserrat text-xs sm:text-sm md:text-base tracking-[0.2em] uppercase text-[#ffe4e8] font-medium">
+                    November 20, 2002
+                </span>
+                <span class="text-[#ffd700] text-sm">✦</span>
+            </div>
+
+            <p class="font-montserrat text-gray-300 text-sm sm:text-base md:text-lg max-w-xl mx-auto mt-8 leading-relaxed font-light">
+                Today is all about celebrating your grace, your laughter, and the light you bring into the lives of everyone lucky enough to know you.
+            </p>
+        </div>
+    </header>
+
+    <!-- Heartfelt Birthday Message Card -->
+    <section class="relative z-10 px-4 py-10 max-w-4xl mx-auto">
+        <div class="glass-card rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden">
+            <div class="absolute -top-16 -right-16 w-40 h-40 bg-[#ffd700]/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-16 -left-16 w-40 h-40 bg-[#b76e79]/15 rounded-full blur-2xl pointer-events-none"></div>
+
+            <h3 class="font-playfair text-2xl sm:text-3xl text-gold mb-6">
+                Wishing You Magic & Endless Joy
+            </h3>
+
+            <p class="font-montserrat text-gray-200 text-sm sm:text-base md:text-lg leading-relaxed font-light mb-6">
+                Happy Birthday, Teemarh! As you step into another amazing year, I hope every single dream you hold close to your heart finds its way to you. Thank you for being such an unforgettable soul, for every late-night laugh, and for every memory we've shared.
+            </p>
+
+            <p class="font-dancing text-3xl sm:text-4xl text-[#ffb6c1]">
+                Here’s to many more chapters together ✨
+            </p>
+        </div>
+    </section>
+
+    <!-- Beautiful Memories Gallery Section -->
+    <section class="relative z-10 py-16 px-4 max-w-6xl mx-auto">
+        <div class="text-center mb-10">
+            <h3 class="font-playfair text-3xl sm:text-4xl md:text-5xl text-white mb-4">
+                Beautiful Memories
+            </h3>
+            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-[#b76e79] to-transparent mx-auto"></div>
+            <p class="font-montserrat text-gray-400 text-xs sm:text-sm mt-4">
+                Snapshots of moments worth keeping forever
+            </p>
+        </div>
+
+        <!-- Image Uploader (Hidden by default, shown only when Teemarh unlocks Admin mode) -->
+        <div id="uploadContainer" class="flex flex-col items-center justify-center gap-4 mb-12 hidden">
+            <div class="glass-card p-5 rounded-2xl border border-[#b76e79]/40 flex flex-col sm:flex-row items-center gap-3 w-full max-w-xl">
+                <input type="text" id="memoryCaptionInput" maxlength="50" placeholder="Optional caption (e.g. Birthday Dinner ✨)" class="w-full sm:flex-1 bg-black/50 border border-[#b76e79]/40 rounded-full px-4 py-2.5 text-white font-montserrat text-xs sm:text-sm focus:outline-none focus:border-[#ffd700] placeholder-gray-400">
+                <label class="w-full sm:w-auto text-center cursor-pointer px-6 py-2.5 bg-gradient-to-r from-[#b76e79] to-[#a05d68] rounded-full text-white font-montserrat font-medium text-xs sm:text-sm transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(183,110,121,0.4)] whitespace-nowrap">
+                    <span id="uploadLabelText">+ Add Memories</span>
+                    <input type="file" id="imageUpload" multiple accept="image/*" class="hidden">
+                </label>
+            </div>
+            <button id="lockAdminBtn" type="button" class="px-5 py-2 rounded-full border border-gray-600 text-gray-300 font-montserrat text-xs hover:bg-white/10 transition-colors cursor-pointer">
+                Lock Teemarh View
+            </button>
+        </div>
+
+        <!-- Live Polaroid Gallery Grid -->
+        <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 px-2 sm:px-6 md:px-10">
+            <div id="loadingMemories" class="col-span-full text-center text-[#ffb6c1] font-montserrat animate-pulse text-base sm:text-lg py-8">
+                Loading beautiful memories...
+            </div>
+        </div>
+    </section>
+
+    <!-- Birthday Wishes Wall (Visitors leave birthday wishes for Teemarh) -->
+    <section class="relative z-10 py-14 px-4 max-w-5xl mx-auto">
+        <div class="text-center mb-10">
+            <p class="font-montserrat uppercase tracking-[0.25em] text-xs text-[#ffb6c1] mb-2">
+                Guestbook
+            </p>
+            <h3 class="font-playfair text-3xl sm:text-4xl text-white mb-3">
+                Birthday Wishes for Teemarh
+            </h3>
+            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-[#ffd700] to-transparent mx-auto"></div>
+            <p class="font-montserrat text-gray-400 text-xs sm:text-sm mt-3">
+                Drop a sweet message to celebrate Teemarh on her special day 💌
+            </p>
+        </div>
+
+        <!-- Leave a Wish Form (Visible to Visitors & Everyone) -->
+        <form id="wishForm" class="glass-card rounded-3xl p-6 sm:p-8 max-w-2xl mx-auto mb-12 border border-[#b76e79]/35">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <input type="text" id="wishAuthorInput" required maxlength="40" placeholder="Your Name (e.g. Sarah)" class="w-full bg-black/50 border border-[#b76e79]/40 rounded-xl px-4 py-3 text-white font-montserrat text-sm focus:outline-none focus:border-[#ffd700] placeholder-gray-400">
+                <input type="text" id="wishRelationInput" maxlength="30" placeholder="Title / Tag (e.g. Bestie, Family)" class="w-full bg-black/50 border border-[#b76e79]/40 rounded-xl px-4 py-3 text-white font-montserrat text-sm focus:outline-none focus:border-[#ffd700] placeholder-gray-400">
+            </div>
+            <textarea id="wishMessageInput" required rows="3" maxlength="280" placeholder="Write your birthday wish for Teemarh..." class="w-full bg-black/50 border border-[#b76e79]/40 rounded-xl px-4 py-3 text-white font-montserrat text-sm focus:outline-none focus:border-[#ffd700] placeholder-gray-400 mb-4 resize-none"></textarea>
+            <div class="text-center">
+                <button id="submitWishBtn" type="submit" class="px-8 py-3 rounded-full bg-gradient-to-r from-[#b76e79] to-[#d47a87] text-white font-montserrat font-medium text-sm tracking-wide hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(183,110,121,0.4)] cursor-pointer">
+                    Send Birthday Wish ✨
+                </button>
+            </div>
+        </form>
+
+        <!-- Live Wishes Grid -->
+        <div id="wishesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="col-span-full text-center text-gray-400 font-montserrat text-sm py-4">
+                Loading birthday wishes...
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Gift Reveal Section (Different view for Guests vs. Teemarh) -->
+    <section class="relative z-10 py-16 px-4 max-w-3xl mx-auto text-center">
+        <div class="glass-card rounded-3xl p-8 sm:p-12 border border-[#ffd700]/30">
+            <p class="font-montserrat uppercase tracking-[0.25em] text-xs text-[#ffd700] mb-3">
+                One More Thing...
+            </p>
+            <h3 class="font-playfair text-3xl sm:text-4xl text-white mb-6">
+                Teemarh's Birthday Surprise
+            </h3>
+
+            <!-- Guest Locked View (Shown when regular visitors view the page) -->
+            <div id="giftLockedGuest" class="p-6 sm:p-8 rounded-2xl bg-black/40 border border-[#b76e79]/35">
+                <div class="text-3xl mb-3">🔒</div>
+                <p class="font-playfair text-xl text-[#ffb6c1] mb-2">
+                    Reserved Exclusively for the Birthday Girl
+                </p>
+                <p class="font-montserrat text-gray-300 text-xs sm:text-sm font-light max-w-md mx-auto">
+                    This special birthday surprise is locked exclusively for Teemarh on her private VIP link!
+                </p>
+            </div>
+
+            <!-- Teemarh Unlocked View (Shown ONLY when Teemarh logs in with her passcode) -->
+            <div id="giftUnlockedTeemarh" class="hidden">
+                <!-- Reveal Trigger Button -->
+                <button id="giftBtn" type="button" class="px-8 py-4 rounded-full bg-gradient-to-r from-[#b76e79] via-[#d47a87] to-[#b76e79] text-white font-montserrat font-medium text-sm sm:text-base tracking-wide shadow-[0_0_25px_rgba(183,110,121,0.55)] hover:shadow-[0_0_35px_rgba(255,215,0,0.6)] hover:scale-105 transition-all duration-300 cursor-pointer">
+                    Tap to Unwrap Your Gift, Teemarh 🎁
+                </button>
+
+                <!-- Hidden Gift Message (Revealed on Click) -->
+                <div id="giftReveal" class="hidden opacity-0 scale-95 transition-all duration-500 mt-4">
+                    <div class="p-6 sm:p-8 rounded-2xl bg-black/40 border border-[#ffd700]/40 shadow-[0_0_30px_rgba(255,215,0,0.15)]">
+                        <div class="text-4xl mb-4">✨🎁✨</div>
+                        <h4 class="font-playfair text-2xl sm:text-3xl text-gold mb-3">
+                            Happy Birthday, Queen Teemarh!
+                        </h4>
+                        <p class="font-montserrat text-gray-200 text-sm sm:text-base leading-relaxed font-light">
+                            This website is just the beginning! Your real birthday gift is waiting for you tomorrow—get ready to smile! 💖
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-10 text-center border-t border-[#b76e79]/25 mt-12 relative z-10 px-4">
+        <p class="font-montserrat text-gray-400 text-xs sm:text-sm mb-4">
+            Made with love for Teemarh's Birthday &copy; <span id="year"></span>
+        </p>
+        <button id="adminBtn" type="button" class="hidden text-xs text-[#ffd700]/80 hover:text-[#ffd700] transition-colors underline font-montserrat bg-transparent border-none cursor-pointer focus:outline-none py-2 px-4">
+            👑 Teemarh: Create Your Secret Passcode
+        </button>
+    </footer>
+
+    <!-- Custom Passcode Creation & Unlock Modal -->
+    <div id="passcodeModal" class="fixed inset-0 modal-overlay z-[100] hidden flex items-center justify-center px-4 opacity-0 transition-opacity duration-300">
+        <div class="glass-card border border-[#b76e79]/50 rounded-3xl p-8 max-w-sm w-full text-center transform scale-95 transition-transform duration-300 shadow-[0_0_40px_rgba(183,110,121,0.25)]" id="passcodeCard">
+            <div class="text-3xl mb-2">👑</div>
+            <h4 id="modalTitle" class="font-playfair text-2xl sm:text-3xl text-gold mb-2">Create Your Passcode</h4>
+            <p id="modalSubtitle" class="font-montserrat text-xs sm:text-sm text-gray-300 mb-6 font-light">
+                Set a private passcode so only Teemarh can upload memories and open her birthday gift.
+            </p>
+            <input type="password" id="passcodeInput" class="w-full bg-black/50 border border-[#b76e79]/50 rounded-xl px-4 py-3 text-white font-montserrat focus:outline-none focus:border-[#ffd700] mb-3 text-center placeholder-gray-500 transition-colors" placeholder="Enter Passcode (min 4 chars)">
+            <input type="password" id="confirmPasscodeInput" class="w-full bg-black/50 border border-[#b76e79]/50 rounded-xl px-4 py-3 text-white font-montserrat focus:outline-none focus:border-[#ffd700] mb-2 text-center placeholder-gray-500 transition-colors" placeholder="Confirm Passcode">
+            <div class="h-6">
+                <p id="passcodeError" class="text-[#ff6b6b] text-xs font-montserrat hidden tracking-wide">
+                    Error message
+                </p>
+            </div>
+            <div class="flex gap-4 justify-center mt-2">
+                <button id="cancelAdminBtn" type="button" class="px-6 py-2.5 rounded-full border border-gray-500 text-gray-300 font-montserrat text-sm hover:bg-white/10 transition-colors cursor-pointer">
+                    Cancel
+                </button>
+                <button id="submitAdminBtn" type="button" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#b76e79] to-[#a05d68] text-white font-montserrat text-sm hover:shadow-[0_0_15px_rgba(183,110,121,0.5)] transition-all cursor-pointer">
+                    Save & Unlock
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Functionality -->
+    <script type="module">
+        // Import Firebase dependencies
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, collection, onSnapshot, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Optional: If deploying on Vercel/Netlify, paste your Firebase web config object here to sync photos & wishes live across devices
+        const MANUAL_FIREBASE_CONFIG = null;
+
+        // Detect whether the visitor opened Teemarh's private VIP link (?vip=teemarh)
+        const urlParams = new URLSearchParams(window.location.search);
+        const isVipLink = urlParams.get('vip') === 'teemarh' || window.location.hash === '#vip';
+
+        // Application & Security State
+        let isAdmin = false;
+        let savedPasscode = null;
+        let db = null;
+        let auth = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'teemarh-birthday-app';
+
+        // Default Starter Memories & Wishes (shown when no custom entries exist yet)
+        const DEFAULT_MEMORIES = [
+            {
+                id: 'default-1',
+                imageUrl: 'https://placehold.co/600x600/2b101c/ffd700?text=Queen+Teemarh+%E2%9C%A8',
+                caption: 'Shining bright as always ✨',
+                rotation: '-2deg',
+                isDefault: true
+            },
+            {
+                id: 'default-2',
+                imageUrl: 'https://placehold.co/600x600/1f0c15/ffb6c1?text=Unforgettable+Moments',
+                caption: 'Laughter that lights up every room 💖',
+                rotation: '1.5deg',
+                isDefault: true
+            },
+            {
+                id: 'default-3',
+                imageUrl: 'https://placehold.co/600x600/261019/e6a4b4?text=Birthday+Celebration',
+                caption: 'Cheers to a brand new chapter 🥂',
+                rotation: '-1.5deg',
+                isDefault: true
+            }
+        ];
+
+        const DEFAULT_WISHES = [
+            {
+                id: 'welcome-wish-1',
+                author: 'Your Favorite Person',
+                relation: 'Birthday Host',
+                message: 'Happy Birthday Teemarh! Wishing you endless happiness, good health, and every blessing your heart desires this year and always! 🎂✨',
+                isDefault: true
+            }
+        ];
+
+        let memoriesList = [...DEFAULT_MEMORIES];
+        let wishesList = [...DEFAULT_WISHES];
+
+        // Safe Local Storage Helpers (used as fallback when Firebase config is not set)
+        const STORAGE_KEYS = {
+            passcode: 'teemarh_bday_passcode_v1',
+            memories: 'teemarh_bday_memories_v1',
+            wishes: 'teemarh_bday_wishes_v1'
+        };
+
+        function readLocalStore(key) {
+            try {
+                const raw = window.localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : null;
+            } catch (err) {
+                return null;
+            }
+        }
+
+        function writeLocalStore(key, value) {
+            try {
+                window.localStorage.setItem(key, JSON.stringify(value));
+            } catch (err) {
+                // Ignore storage quota or iframe sandbox restrictions
+            }
+        }
+
+        // DOM Element References
+        const statusToast = document.getElementById('statusToast');
+        const vipBanner = document.getElementById('vipBanner');
+        const bannerLockBtn = document.getElementById('bannerLockBtn');
+        const uploadContainer = document.getElementById('uploadContainer');
+        const memoryCaptionInput = document.getElementById('memoryCaptionInput');
+        const uploadLabelText = document.getElementById('uploadLabelText');
+        const imageUpload = document.getElementById('imageUpload');
+        const lockAdminBtn = document.getElementById('lockAdminBtn');
+        const galleryGrid = document.getElementById('galleryGrid');
+        const wishForm = document.getElementById('wishForm');
+        const wishAuthorInput = document.getElementById('wishAuthorInput');
+        const wishRelationInput = document.getElementById('wishRelationInput');
+        const wishMessageInput = document.getElementById('wishMessageInput');
+        const wishesGrid = document.getElementById('wishesGrid');
+        const giftLockedGuest = document.getElementById('giftLockedGuest');
+        const giftUnlockedTeemarh = document.getElementById('giftUnlockedTeemarh');
+        const giftBtn = document.getElementById('giftBtn');
+        const giftReveal = document.getElementById('giftReveal');
+        const yearSpan = document.getElementById('year');
+        const adminBtn = document.getElementById('adminBtn');
+        const passcodeModal = document.getElementById('passcodeModal');
+        const passcodeCard = document.getElementById('passcodeCard');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSubtitle = document.getElementById('modalSubtitle');
+        const passcodeInput = document.getElementById('passcodeInput');
+        const confirmPasscodeInput = document.getElementById('confirmPasscodeInput');
+        const passcodeError = document.getElementById('passcodeError');
+        const cancelAdminBtn = document.getElementById('cancelAdminBtn');
+        const submitAdminBtn = document.getElementById('submitAdminBtn');
+
+        // Toast Notification Helper
+        let toastTimer = null;
+        function showToast(message) {
+            if (!statusToast) return;
+            statusToast.textContent = message;
+            statusToast.classList.remove('hidden');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                statusToast.classList.add('hidden');
+            }, 3200);
+        }
+
+        // Update Footer Admin Button Visibility & Text
+        function updateAdminButtonLabel() {
+            if (!adminBtn || isAdmin) return;
+            if (!isVipLink) {
+                adminBtn.classList.add('hidden');
+                return;
+            }
+            adminBtn.classList.remove('hidden');
+            if (savedPasscode) {
+                adminBtn.textContent = '👑 Teemarh VIP Access (Enter Passcode)';
+            } else {
+                adminBtn.textContent = '👑 Teemarh: Create Your Secret Passcode';
+            }
+        }
+
+        // Switch Between Guest View and Teemarh VIP View
+        function applyViewMode() {
+            if (isAdmin) {
+                document.body.classList.add('admin-mode');
+                if (vipBanner) vipBanner.classList.remove('hidden');
+                if (uploadContainer) uploadContainer.classList.remove('hidden');
+                if (adminBtn) adminBtn.classList.add('hidden');
+                if (giftLockedGuest) giftLockedGuest.classList.add('hidden');
+                if (giftUnlockedTeemarh) giftUnlockedTeemarh.classList.remove('hidden');
+            } else {
+                document.body.classList.remove('admin-mode');
+                if (vipBanner) vipBanner.classList.add('hidden');
+                if (uploadContainer) uploadContainer.classList.add('hidden');
+                if (giftLockedGuest) giftLockedGuest.classList.remove('hidden');
+                if (giftUnlockedTeemarh) giftUnlockedTeemarh.classList.add('hidden');
+                updateAdminButtonLabel();
+            }
+            renderGallery();
+            renderWishes();
+        }
+
+        // Escape HTML Helper to Prevent XSS in Captions & Wishes
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // === 1. INITIALIZE APP (FIREBASE + LOCAL FALLBACK) ===
+        async function initApp() {
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+
+            // Load local fallback values first
+            const localPass = readLocalStore(STORAGE_KEYS.passcode);
+            if (localPass) savedPasscode = localPass;
+
+            const localMemories = readLocalStore(STORAGE_KEYS.memories);
+            if (Array.isArray(localMemories) && localMemories.length > 0) {
+                memoriesList = localMemories;
+            }
+
+            const localWishes = readLocalStore(STORAGE_KEYS.wishes);
+            if (Array.isArray(localWishes) && localWishes.length > 0) {
+                wishesList = localWishes;
+            }
+
+            applyViewMode();
+
+            // Connect to Firebase if config is available
+            let firebaseConfig = MANUAL_FIREBASE_CONFIG;
+            if (!firebaseConfig && typeof __firebase_config !== 'undefined') {
+                try {
+                    firebaseConfig = typeof __firebase_config === 'string'
+                        ? JSON.parse(__firebase_config)
+                        : __firebase_config;
+                } catch (e) {
+                    firebaseConfig = null;
+                }
+            }
+
+            if (firebaseConfig && firebaseConfig.apiKey) {
+                try {
+                    const app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+
+                    // Listen for Teemarh's saved passcode
+                    const adminDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'admin');
+                    onSnapshot(adminDocRef, (snap) => {
+                        if (snap.exists() && snap.data().passcode) {
+                            savedPasscode = snap.data().passcode;
+                            updateAdminButtonLabel();
+                        }
+                    });
+
+                    // Listen for live gallery memories
+                    const memoriesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'memories');
+                    onSnapshot(memoriesColRef, (snapshot) => {
+                        const cloudMemories = [];
+                        snapshot.forEach((docSnap) => {
+                            cloudMemories.push({ id: docSnap.id, ...docSnap.data() });
+                        });
+                        cloudMemories.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                        memoriesList = cloudMemories.length > 0 ? cloudMemories : [...DEFAULT_MEMORIES];
+                        renderGallery();
+                    });
+
+                    // Listen for live birthday wishes
+                    const wishesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'wishes');
+                    onSnapshot(wishesColRef, (snapshot) => {
+                        const cloudWishes = [];
+                        snapshot.forEach((docSnap) => {
+                            cloudWishes.push({ id: docSnap.id, ...docSnap.data() });
+                        });
+                        cloudWishes.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                        wishesList = cloudWishes.length > 0 ? cloudWishes : [...DEFAULT_WISHES];
+                        renderWishes();
+                    });
+                } catch (err) {
+                    // Gracefully stay in local fallback mode if Firebase fails
+                    console.warn('Running in standalone mode:', err);
+                }
+            }
+        }
+
+        initApp();
+
+        // Automatically open Teemarh's passcode prompt when she visits her private ?vip=teemarh link
+        if (isVipLink && adminBtn) {
+            adminBtn.classList.remove('hidden');
+            setTimeout(() => {
+                if (!isAdmin && passcodeModal && passcodeModal.classList.contains('hidden')) {
+                    adminBtn.click();
+                }
+            }, 600);
+        }
+
+        // === 2. CREATE PASSCODE & UNLOCK TEEMARH VIEW LOGIC ===
+        function openPasscodeModal() {
+            if (!passcodeModal || !passcodeCard) return;
+            if (passcodeInput) passcodeInput.value = '';
+            if (confirmPasscodeInput) confirmPasscodeInput.value = '';
+            if (passcodeError) passcodeError.classList.add('hidden');
+
+            if (savedPasscode) {
+                if (modalTitle) modalTitle.textContent = 'Welcome Back, Teemarh';
+                if (modalSubtitle) modalSubtitle.textContent = 'Enter your secret passcode to unlock your VIP view.';
+                if (confirmPasscodeInput) confirmPasscodeInput.classList.add('hidden');
+                if (submitAdminBtn) submitAdminBtn.textContent = 'Unlock VIP View';
+            } else {
+                if (modalTitle) modalTitle.textContent = 'Create Your Passcode';
+                if (modalSubtitle) modalSubtitle.textContent = 'Set a private passcode so only Teemarh can upload memories and open her birthday gift.';
+                if (confirmPasscodeInput) confirmPasscodeInput.classList.remove('hidden');
+                if (submitAdminBtn) submitAdminBtn.textContent = 'Save & Unlock';
+            }
+
+            passcodeModal.classList.remove('hidden');
+            setTimeout(() => {
+                passcodeModal.classList.remove('opacity-0');
+                passcodeCard.classList.remove('scale-95');
+                passcodeCard.classList.add('scale-100');
+                if (passcodeInput) passcodeInput.focus();
+            }, 20);
+        }
+
+        function closePasscodeModal() {
+            if (!passcodeModal || !passcodeCard) return;
+            passcodeModal.classList.add('opacity-0');
+            passcodeCard.classList.remove('scale-100');
+            passcodeCard.classList.add('scale-95');
+            setTimeout(() => {
+                passcodeModal.classList.add('hidden');
+            }, 250);
+        }
+
+        function showModalError(msg) {
+            if (!passcodeError) return;
+            passcodeError.textContent = msg;
+            passcodeError.classList.remove('hidden');
+        }
+
+        async function handlePasscodeSubmit() {
+            const code = passcodeInput ? passcodeInput.value.trim() : '';
+            if (code.length < 4) {
+                showModalError('Passcode must be at least 4 characters.');
+                return;
+            }
+
+            if (!savedPasscode) {
+                // Creating passcode for the first time
+                const confirmCode = confirmPasscodeInput ? confirmPasscodeInput.value.trim() : '';
+                if (code !== confirmCode) {
+                    showModalError('Passcodes do not match. Try again.');
+                    return;
+                }
+                savedPasscode = code;
+                writeLocalStore(STORAGE_KEYS.passcode, code);
+
+                if (db) {
+                    try {
+                        const adminDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'admin');
+                        await setDoc(adminDocRef, { passcode: code, updatedAt: Date.now() });
+                    } catch (err) {
+                        console.warn('Could not sync passcode to cloud:', err);
+                    }
+                }
+
+                isAdmin = true;
+                applyViewMode();
+                closePasscodeModal();
+                showToast('Passcode created! Welcome to your VIP view, Queen Teemarh 👑');
+            } else {
+                // Verifying existing passcode
+                if (code !== savedPasscode) {
+                    showModalError('Incorrect passcode. Please try again.');
+                    return;
+                }
+                isAdmin = true;
+                applyViewMode();
+                closePasscodeModal();
+                showToast('Welcome back, Queen Teemarh! 👑');
+            }
+        }
+
+        if (adminBtn) adminBtn.addEventListener('click', openPasscodeModal);
+        if (cancelAdminBtn) cancelAdminBtn.addEventListener('click', closePasscodeModal);
+        if (submitAdminBtn) submitAdminBtn.addEventListener('click', handlePasscodeSubmit);
+
+        if (passcodeInput) {
+            passcodeInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    if (!savedPasscode && confirmPasscodeInput) {
+                        confirmPasscodeInput.focus();
+                    } else {
+                        handlePasscodeSubmit();
+                    }
+                }
+            });
+        }
+
+        if (confirmPasscodeInput) {
+            confirmPasscodeInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handlePasscodeSubmit();
+            });
+        }
+
+        function lockVipView() {
+            isAdmin = false;
+            applyViewMode();
+            showToast('Switched to Guest View 🔒');
+        }
+
+        if (lockAdminBtn) lockAdminBtn.addEventListener('click', lockVipView);
+        if (bannerLockBtn) bannerLockBtn.addEventListener('click', lockVipView);
+
+        // === 3. GALLERY RENDERING, IMAGE UPLOAD & DELETE ===
+        function renderGallery() {
+            if (!galleryGrid) return;
+            galleryGrid.innerHTML = '';
+
+            memoriesList.forEach((item, index) => {
+                const rotations = ['-2deg', '1.5deg', '-1.5deg', '2deg', '-1deg'];
+                const rot = item.rotation || rotations[index % rotations.length];
+                const card = document.createElement('div');
+                card.className = 'polaroid';
+                card.style.transform = `rotate(${rot})`;
+
+                card.innerHTML = `
+                    <button type="button" class="delete-btn" title="Delete memory" aria-label="Delete memory">✕</button>
+                    <div class="aspect-square w-full overflow-hidden rounded bg-[#1a0b12]">
+                        <img src="${escapeHtml(item.imageUrl)}"
+                             alt="${escapeHtml(item.caption || 'Beautiful Memory')}"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x600/2b101c/ffd700?text=Beautiful+Memory';"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <p class="font-dancing text-2xl text-[#3b1824] text-center mt-4 px-2 break-words">
+                        ${escapeHtml(item.caption || 'Beautiful Memory ✨')}
+                    </p>
+                `;
+
+                const delBtn = card.querySelector('.delete-btn');
+                if (delBtn) {
+                    delBtn.addEventListener('click', async () => {
+                        if (!isAdmin) return;
+                        if (db && !item.isDefault) {
+                            try {
+                                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'memories', item.id));
+                                showToast('Memory deleted');
+                                return;
+                            } catch (err) {
+                                console.warn('Cloud delete failed, removing locally:', err);
+                            }
+                        }
+                        memoriesList = memoriesList.filter((m) => m.id !== item.id);
+                        if (memoriesList.length === 0) {
+                            memoriesList = [...DEFAULT_MEMORIES];
+                        }
+                        writeLocalStore(STORAGE_KEYS.memories, memoriesList);
+                        renderGallery();
+                        showToast('Memory removed');
+                    });
+                }
+
+                galleryGrid.appendChild(card);
+            });
+        }
+
+        function compressImageFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const maxSide = 900;
+                        let { width, height } = img;
+                        if (width > maxSide || height > maxSide) {
+                            if (width > height) {
+                                height = Math.round((height * maxSide) / width);
+                                width = maxSide;
+                            } else {
+                                width = Math.round((width * maxSide) / height);
+                                height = maxSide;
+                            }
+                        }
+                        const offscreen = document.createElement('canvas');
+                        offscreen.width = width;
+                        offscreen.height = height;
+                        const ctx2d = offscreen.getContext('2d');
+                        ctx2d.drawImage(img, 0, 0, width, height);
+                        resolve(offscreen.toDataURL('image/jpeg', 0.8));
+                    };
+                    img.onerror = reject;
+                    img.src = event.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        if (imageUpload) {
+            imageUpload.addEventListener('change', async (e) => {
+                if (!isAdmin) return;
+                const files = Array.from(e.target.files || []);
+                if (files.length === 0) return;
+
+                if (uploadLabelText) uploadLabelText.textContent = 'Uploading...';
+                const customCaption = memoryCaptionInput ? memoryCaptionInput.value.trim() : '';
+
+                try {
+                    for (const file of files) {
+                        const compressedDataUrl = await compressImageFile(file);
+                        const newMemory = {
+                            imageUrl: compressedDataUrl,
+                            caption: customCaption || 'Cherished Moment ✨',
+                            createdAt: Date.now()
+                        };
+
+                        if (db) {
+                            await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'memories'), newMemory);
+                        } else {
+                            const existingCustom = memoriesList.filter((m) => !m.isDefault);
+                            memoriesList = [
+                                { id: 'local-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6), ...newMemory },
+                                ...existingCustom
+                            ];
+                            writeLocalStore(STORAGE_KEYS.memories, memoriesList);
+                            renderGallery();
+                        }
+                    }
+
+                    if (memoryCaptionInput) memoryCaptionInput.value = '';
+                    showToast(files.length > 1 ? `${files.length} memories added! 📸` : 'Memory added! 📸');
+                } catch (err) {
+                    showToast('Could not upload image. Please try a smaller photo.');
+                } finally {
+                    if (uploadLabelText) uploadLabelText.textContent = '+ Add Memories';
+                    imageUpload.value = '';
+                }
+            });
+        }
+
+        // === 4. BIRTHDAY WISHES GUESTBOOK ===
+        function renderWishes() {
+            if (!wishesGrid) return;
+            wishesGrid.innerHTML = '';
+
+            wishesList.forEach((wish) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl p-6 relative border border-[#b76e79]/30 transition-all duration-300 hover:border-[#ffd700]/40';
+
+                card.innerHTML = `
+                    <button type="button" class="delete-btn !top-4 !right-4" title="Delete wish" aria-label="Delete wish">✕</button>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#b76e79] to-[#ffd700] flex items-center justify-center text-[#12070c] font-playfair font-bold text-base shrink-0">
+                            ${escapeHtml((wish.author || 'F').charAt(0).toUpperCase())}
+                        </div>
+                        <div>
+                            <h4 class="font-playfair text-lg text-[#ffd700] leading-tight">
+                                ${escapeHtml(wish.author || 'Friend')}
+                            </h4>
+                            ${wish.relation ? `<span class="font-montserrat text-xs text-[#ffb6c1]">${escapeHtml(wish.relation)}</span>` : ''}
+                        </div>
+                    </div>
+                    <p class="font-montserrat text-gray-200 text-sm leading-relaxed font-light">
+                        “${escapeHtml(wish.message)}”
+                    </p>
+                `;
+
+                const delBtn = card.querySelector('.delete-btn');
+                if (delBtn) {
+                    delBtn.addEventListener('click', async () => {
+                        if (!isAdmin) return;
+                        if (db && !wish.isDefault) {
+                            try {
+                                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'wishes', wish.id));
+                                showToast('Wish deleted');
+                                return;
+                            } catch (err) {
+                                console.warn('Cloud wish delete failed:', err);
+                            }
+                        }
+                        wishesList = wishesList.filter((w) => w.id !== wish.id);
+                        if (wishesList.length === 0) {
+                            wishesList = [...DEFAULT_WISHES];
+                        }
+                        writeLocalStore(STORAGE_KEYS.wishes, wishesList);
+                        renderWishes();
+                        showToast('Wish removed');
+                    });
+                }
+
+                wishesGrid.appendChild(card);
+            });
+        }
+
+        if (wishForm) {
+            wishForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const author = wishAuthorInput ? wishAuthorInput.value.trim() : '';
+                const relation = wishRelationInput ? wishRelationInput.value.trim() : '';
+                const message = wishMessageInput ? wishMessageInput.value.trim() : '';
+
+                if (!author || !message) return;
+
+                const newWish = {
+                    author,
+                    relation,
+                    message,
+                    createdAt: Date.now()
+                };
+
+                if (db) {
+                    try {
+                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'wishes'), newWish);
+                    } catch (err) {
+                        wishesList = [{ id: 'wish-' + Date.now(), ...newWish }, ...wishesList];
+                        writeLocalStore(STORAGE_KEYS.wishes, wishesList);
+                        renderWishes();
+                    }
+                } else {
+                    wishesList = [{ id: 'wish-' + Date.now(), ...newWish }, ...wishesList];
+                    writeLocalStore(STORAGE_KEYS.wishes, wishesList);
+                    renderWishes();
+                }
+
+                wishForm.reset();
+                burstConfetti(35);
+                showToast('Birthday wish sent to Teemarh! 💌');
+            });
+        }
+
+        // === 6. GIFT REVEAL & CONFETTI LOGIC ===
+        if (giftBtn && giftReveal) {
+            giftBtn.addEventListener('click', () => {
+                giftBtn.classList.add('hidden');
+                giftReveal.classList.remove('hidden');
+                setTimeout(() => {
+                    giftReveal.classList.remove('opacity-0', 'scale-95');
+                    giftReveal.classList.add('opacity-100', 'scale-100');
+                }, 20);
+                burstConfetti(80);
+                showToast('Happy Birthday Queen Teemarh! 🎉🎁');
+            });
+        }
+
+        // === 7. CONTINUOUS ROSE-GOLD & GOLD BIRTHDAY CONFETTI RAIN ===
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas ? canvas.getContext('2d') : null;
+        let particles = [];
+        const confettiColors = ['#ffd700', '#b76e79', '#ffb6c1', '#fff3b0', '#e6a4b4', '#ffffff'];
+
+        function resizeConfettiCanvas() {
+            if (!canvas) return;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createParticle(startAtTop = false) {
+            const width = canvas ? canvas.width : window.innerWidth;
+            const height = canvas ? canvas.height : window.innerHeight;
+            return {
+                x: Math.random() * width,
+                y: startAtTop ? -20 - Math.random() * 120 : Math.random() * height,
+                size: Math.random() * 6 + 4,
+                speedY: Math.random() * 1.6 + 0.9,
+                speedX: (Math.random() - 0.5) * 1.1,
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 4,
+                color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                shape: Math.random() > 0.35 ? 'rect' : 'circle',
+                opacity: Math.random() * 0.45 + 0.45
+            };
+        }
+
+        function burstConfetti(count = 50) {
+            if (!canvas) return;
+            for (let i = 0; i < count; i++) {
+                const p = createParticle(true);
+                p.speedY = Math.random() * 3 + 1.8;
+                particles.push(p);
+            }
+            if (particles.length > 180) {
+                particles = particles.slice(-180);
+            }
+        }
+
+        function initConfetti() {
+            if (!canvas || !ctx) return;
+            resizeConfettiCanvas();
+            particles = [];
+            const initialCount = window.innerWidth < 640 ? 45 : 75;
+            for (let i = 0; i < initialCount; i++) {
+                particles.push(createParticle(false));
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            if (!canvas || !ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.y += p.speedY;
+                p.x += p.speedX + Math.sin(p.y * 0.015) * 0.35;
+                p.rotation += p.rotationSpeed;
+
+                if (p.y > canvas.height + 20) {
+                    particles[i] = createParticle(true);
+                }
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.globalAlpha = p.opacity;
+                ctx.fillStyle = p.color;
+
+                if (p.shape === 'rect') {
+                    ctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.6);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, p.size / 2.2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            requestAnimationFrame(animateConfetti);
+        }
+
+        window.addEventListener('resize', resizeConfettiCanvas);
+        initConfetti();
+    </script>
+</body>
+</html>
